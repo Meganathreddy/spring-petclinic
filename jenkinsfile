@@ -1,19 +1,38 @@
 node ('MVN') {
-    stage ('SCM') {
-        git 'https://github.com/Meganathreddy/spring-petclinic.git'
-    }
-    stage ('Build') {
-        sh 'pwd'
-        sh 'mvn clean package'
-    }
-    stage('SonarQube analysis') {
-            // performing sonarqube analysis with "withSonarQubeENV(<Name of Server configured in Jenkins>)"
-        withSonarQubeEnv('sonar') {
-            // requires SonarQube Scanner for Maven 3.2+
-            sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.2:sonar'
+			stage ('SCM') {
+				git 'https://github.com/Meganathreddy/spring-petclinic.git'
+			}
+			stage ('Build') {
+				sh 'pwd'
+				sh 'mvn clean package'
+			}
+			stage('SonarQube analysis') {
+					// performing sonarqube analysis with "withSonarQubeENV(<Name of Server configured in Jenkins>)"
+				withSonarQubeEnv('sonar') {
+					// requires SonarQube Scanner for Maven 3.2+
+					sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.2:sonar'
+				}
+			}
+			stage ('Dummy') {
+				sh 'pwd'
+			}
+	post {
+        success {
+			emailext(
+            subject: "${env.JOB_NAME} [${env.BUILD_NUMBER}] Development Promoted to Master",
+            body: """<p>'${env.JOB_NAME} [${env.BUILD_NUMBER}]' Development Promoted to Master":</p>
+            <p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>""",
+            to: "meganath.chilla@gmail.com"
+			)
         }
-    }
-	stage ('Dummy') {
-		sh 'pwd'
-	}
+   
+        failure {
+			emailext(
+            subject: "${env.JOB_NAME} [${env.BUILD_NUMBER}] Failed!",
+            body: """<p>'${env.JOB_NAME} [${env.BUILD_NUMBER}]' Failed!":</p>
+            <p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>""",
+            to: "meganath.chilla@gmail.com"
+			)
+        }
+	}			
 }
