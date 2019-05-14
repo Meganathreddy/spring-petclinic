@@ -18,7 +18,7 @@ node ('MVN') {
 			stage ('Dummy') {
 				sh 'pwd'
 			}
-		notifySucessfull()
+		notifySuccessfull()
 	}
 	catch (e) {
 		currentBuild.result = "Failed"
@@ -26,9 +26,9 @@ node ('MVN') {
 		throw e
 	}
 }
-	def notifyStarted() { }
-def notifySucessfull() { 
-		slackSend (message: "SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
+def notifyStarted() { }
+def notifySuccessfull() { 
+		slackSend (color: '#FF0000', message: "SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
 		)
 		hipchatSend (color: 'RED', notify: true,
 			message: "SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
