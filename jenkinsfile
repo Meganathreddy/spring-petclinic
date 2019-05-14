@@ -16,7 +16,7 @@ node ('MVN') {
 				}
 			}
 			stage ('Dummy') {
-				sh 'pwdd'
+				sh 'pwd'
 			}
 		notifySuccessfull()
 	}
